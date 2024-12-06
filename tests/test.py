@@ -6,7 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 from api.user import get_db, get_db_session
-from crud.houses import create_house
+from crud.houses import create_house, add_house_to_street
 from database.database import DATABASE_URL_TEST
 from models.user import User
 
@@ -17,8 +17,9 @@ async_session = async_sessionmaker(engine, expire_on_commit=False)
 async def main():
     async with async_session() as session:
         try:
-            home = create_house(db=session, home_name="MyHouse", street_name="VulBChausskaya")
-            print(home)
+            # home = create_house(db=session, home_name="MyHouse", street_name="VulBChausskaya")
+            street = await add_house_to_street(db=session, street_name="VulBChausskaya", house_name="first_house")
+            print(street)
         except Exception as e:
             print("error", e)
             await session.rollback()

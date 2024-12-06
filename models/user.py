@@ -30,9 +30,15 @@ class Home(Base):
 
     street: Mapped["Street"] = relationship(back_populates="houses")
 
+    def __repr__(self):
+        return f"House {self.name} on the street {self.street.name}"
+
 
 class Street(Base):
     __tablename__ = "streets"
     name: Mapped[str] = mapped_column(String(30))
 
     houses: Mapped[List["Home"]] = relationship(back_populates="street", cascade="all, delete-orphan")
+
+    def __repr__(self):
+        return f"Street {self.name}"
