@@ -1,4 +1,4 @@
-from typing import AsyncGenerator
+from typing import AsyncGenerator, List
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import exc
@@ -29,6 +29,12 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
 @router.post("/users/", response_model=user_schemas.User)
 async def create_user(user: user_crud.UserCreate, db: AsyncSession = Depends(get_db)):
     return await user_crud.create_user(db=db, user=user)
+@router.get("/users/", response_model=List[user_schemas.User])
+async def get_users(db: AsyncSession = Depends(get_db)):
+    db_users = await user_crud.get_users(db=db)
+    if db_users is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return db_users
 
 @router.get("/users/id/{user_id}", response_model=user_schemas.User)
 async def read_user(user_id: int, db: AsyncSession = Depends(get_db)):

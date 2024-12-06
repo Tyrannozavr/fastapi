@@ -16,6 +16,12 @@ async def get_user(db: AsyncSession, user_id: int):
     result = await db.get(User, user_id)
     return result
 
+async def get_users(db: AsyncSession) -> [User]:
+    stmt = select(User)
+    result = await db.execute(stmt)
+    users = result.scalars().all()
+    return users
+
 async def get_user_by_email(db: AsyncSession, email: str):
     stmt = select(User).where(User.email == email)
     result = await db.execute(stmt)
