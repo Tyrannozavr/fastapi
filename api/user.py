@@ -1,6 +1,7 @@
+import asyncio
 from typing import AsyncGenerator, List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy import exc
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -26,9 +27,16 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
             await session.rollback()
             raise
 
-@router.post("/users/", response_model=user_schemas.User)
-async def create_user(user: user_crud.UserCreate, db: AsyncSession = Depends(get_db)):
-    return await user_crud.create_user(db=db, user=user)
+
+@router.post("/users/")
+async def create_user(user: user_crud.UserCreate, background_tasks: BackgroundTasks ,db: AsyncSession = Depends(get_db)):
+    background_tasks.add_task(user_crud.create_user, db, user)
+    return "OK"
+
+# @router.post("/users/", response_model=user_schemas.User)
+# async def create_user(user: user_crud.UserCreate, db: AsyncSession = Depends(get_db)):
+#     return await user_crud.create_user(db=db, user=user)
+
 @router.get("/users/", response_model=List[user_schemas.User])
 async def get_users(db: AsyncSession = Depends(get_db)):
     db_users = await user_crud.get_users(db=db)

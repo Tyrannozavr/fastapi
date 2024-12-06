@@ -7,7 +7,7 @@ Accept: application/json
 POST http://localhost:8000/users/
 Content-Type: application/json
 
-{"username": "testuser", "email": "test@example.com", "full_name": "Test User"}
+{"username": "testuser6", "email": "test6@example.com", "full_name": "Test User"}
 
 ###
 
