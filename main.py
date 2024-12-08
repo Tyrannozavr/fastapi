@@ -1,9 +1,10 @@
 import asyncio
 
 from fastapi import FastAPI
+
+from api import user, test
 from database.database import engine
 from models.user import Base
-from api import user
 
 app = FastAPI()
 
@@ -19,4 +20,5 @@ async def create_database():
 if __name__ == "__main__":
     asyncio.run(create_database())
 app.include_router(user.router)
+app.include_router(test.router)
 
