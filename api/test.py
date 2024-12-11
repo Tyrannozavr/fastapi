@@ -2,6 +2,7 @@ from fastapi import APIRouter
 from sqlalchemy import select
 from models.user import User
 from enum import Enum
+from pydantic import BaseModel
 router = APIRouter()
 
 

@@ -1,0 +1,4 @@
+#curl -X 'GET' \
+#  'http://localhost:8000parameters/{route}/?query=ert' \
+#  -H 'accept: application/json'
+GET http://localhost:8000/parameters/{route}/?query=ert
