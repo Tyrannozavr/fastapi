@@ -1,0 +1,39 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=PyCharm
+
+###
+
+# curl -X 'GET'
+#  'http://127.0.0.1:8000/items/'
+#  -H 'accept: application/json'
+#  -H 'Cookie: ads_id=1'
+GET http://127.0.0.1:8000/items/
+accept: application/json
+Cookie: ads_id=100
+
+###
+
+# curl -X 'GET'
+#  'http://127.0.0.1:8000/items/cookie/helloworld'
+#  -H 'accept: application/json'
+#  -H 'Cookie: ads_id=onetwothree'
+GET http://127.0.0.1:8000/items/cookie/helloworld
+accept: application/json
+Cookie: ads_id=onetwothree
+
+###
+# curl -X 'GET'
+#  'http://127.0.0.1:8000/cookie/test'
+#  -H 'accept: application/json'
+#  -H 'Cookie: third=22; second_one=34; first="helloworld"'
+GET http://127.0.0.1:8000/cookie/test
+accept: application/json
+Cookie: third=22; second_one=34; first="helloworld"
+
+###
+
+
+
+###
+
