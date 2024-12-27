@@ -1,11 +1,11 @@
-from fastapi import APIRouter, Path
-from fastapi import Query, Cookie, Header
-from typing import Annotated, Literal
+from typing import Annotated
 
+from fastapi import APIRouter, Path
 from fastapi import Body
+from fastapi import Query, Cookie, Header
 from pydantic import BaseModel, Field
 
-from api.docs import response2
+from api.docs import validate_user1_docs
 from api.types import UserIn, UserOut
 from my_types.query import FilterParams
 
@@ -122,7 +122,7 @@ class Cookies(BaseModel):
 async def validate_user(user: Annotated[UserIn, Body()]) -> UserOut:
     return UserOut(username=user.username, email=user.email)
 
-@router.post("/response/2", responses=response2.responses)
+@router.post("/response/2", **validate_user1_docs)
 async def validate_user1(user: Annotated[UserIn, Body()]):
     """surprisingly the declaring of the response model just as union of types using vertical bar works correct
      python3.12.3"""

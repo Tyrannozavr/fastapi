@@ -7,7 +7,7 @@ from api.types import UserOut, UserIn, BaseUser
 class SwaggerUI:
     responses: dict[int, dict[str, dict | BaseUser]]
 
-response2 = SwaggerUI(
+validate_user1_docs = dict(
     responses = {
         200: {
             "model": UserOut | UserIn,
