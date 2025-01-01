@@ -7,7 +7,7 @@ from fastapi.exception_handlers import (
     http_exception_handler,
     request_validation_exception_handler,
 )
-from api import user, test, restrictions, files, dependencies
+from api import user, test, restrictions, files, dependencies, auth
 from api.exceptions import MyExcellentException
 from database.database import engine
 from models.user import Base
@@ -29,7 +29,8 @@ if __name__ == "__main__":
 # app.include_router(test.router)
 # app.include_router(restrictions.router)
 # app.include_router(files.router)
-app.include_router(dependencies.router)
+# app.include_router(dependencies.router)
+app.include_router(auth.router, prefix="/auth", tags=["auth"])
 
 
 @app.exception_handler(RequestValidationError)
