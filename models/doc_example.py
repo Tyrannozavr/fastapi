@@ -1,15 +1,9 @@
-from typing import Annotated, Type
+from typing import Annotated
 
-from fastapi import Depends, FastAPI, HTTPException, Query, APIRouter
-from sqlmodel import Field, Session, SQLModel, create_engine, select
-from .blablabla import SecondTable
+from fastapi import Depends, HTTPException, Query, APIRouter
+from sqlmodel import Session, create_engine, select
 
-class Hero(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
-    name: str = Field(index=True)
-    age: int | None = Field(default=None, index=True)
-    secret_name: str
-
+from schemas.heroes import *
 
 sqlite_file_name = "database.db"
 sqlite_url = f"sqlite:///{sqlite_file_name}"
@@ -30,16 +24,18 @@ def get_session():
 SessionDep = Annotated[Session, Depends(get_session)]
 
 database_router = APIRouter()
+heroes_type = "The heroes blood runs cold"
 
-@database_router.post("/heroes/")
-def create_hero(hero: Hero, session: SessionDep) -> Hero:
-    session.add(hero)
+@database_router.post("/heroes/", tags=[heroes_type], response_model=HeroPublic)
+def create_hero(hero: HeroCreate, session: SessionDep) -> Hero:
+    db_hero = Hero.model_validate(hero)
+    session.add(db_hero)
     session.commit()
-    session.refresh(hero)
-    return hero
+    session.refresh(db_hero)
+    return db_hero
 
 
-@database_router.get("/heroes/")
+@database_router.get("/heroes/", tags=[heroes_type])
 def read_heroes(
     session: SessionDep,
     offset: int = 0,
@@ -50,7 +46,7 @@ def read_heroes(
     return heroes
 
 
-@database_router.get("/heroes/{hero_id}")
+@database_router.get("/heroes/{hero_id}", tags=[heroes_type])
 def read_hero(hero_id: int, session: SessionDep) -> Hero:
     hero = session.get(Hero, hero_id)
     if not hero:
@@ -58,7 +54,7 @@ def read_hero(hero_id: int, session: SessionDep) -> Hero:
     return hero
 
 
-@database_router.delete("/heroes/{hero_id}")
+@database_router.delete("/heroes/{hero_id}", tags=[heroes_type])
 def delete_hero(hero_id: int, session: SessionDep):
     hero = session.get(Hero, hero_id)
     if not hero:
@@ -68,8 +64,8 @@ def delete_hero(hero_id: int, session: SessionDep):
     return {"ok": True}
 
 
-@database_router.patch("/heroes/{hero_id}")
-def update_hero(hero_id: int, hero_update: Hero, session: SessionDep) -> Hero:
+@database_router.patch("/heroes/{hero_id}", tags=[heroes_type])
+def update_hero(hero_id: int, hero_update: HeroUpdate, session: SessionDep) -> HeroPublic:
     hero = session.get(Hero, hero_id)
     if not hero:
         raise HTTPException(status_code=404, detail="Hero not found")
@@ -81,5 +77,3 @@ def update_hero(hero_id: int, hero_update: Hero, session: SessionDep) -> Hero:
     return hero
 
 
-class Test(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
