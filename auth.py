@@ -6,6 +6,7 @@ from fastapi import HTTPException
 from fastapi import status
 from fastapi.params import Depends
 from fastapi.security import OAuth2PasswordBearer
+from jwt import InvalidTokenError
 from pydantic import BaseModel
 from passlib.context import CryptContext
 
@@ -51,15 +52,25 @@ fake_users_db = {
 class UserInDB(User):
     hashed_password: str
 
+class TokenData(BaseModel):
+    username: str
+
+
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    payload_data = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-    username = payload_data.get('sub')
-    user = get_user(fake_users_db, username=username)
+    try:
+        payload_data = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username = payload_data.get('sub')
+        if not username:
+            raise credentials_exception
+        token_data = TokenData(username=username)
+    except InvalidTokenError:
+        raise credentials_exception
+    user = get_user(fake_users_db, username=token_data.username)
     if not user:
         raise credentials_exception
     return user

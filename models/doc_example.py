@@ -1,0 +1,85 @@
+from typing import Annotated, Type
+
+from fastapi import Depends, FastAPI, HTTPException, Query, APIRouter
+from sqlmodel import Field, Session, SQLModel, create_engine, select
+from .blablabla import SecondTable
+
+class Hero(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    name: str = Field(index=True)
+    age: int | None = Field(default=None, index=True)
+    secret_name: str
+
+
+sqlite_file_name = "database.db"
+sqlite_url = f"sqlite:///{sqlite_file_name}"
+
+connect_args = {"check_same_thread": False}
+engine = create_engine(sqlite_url, connect_args=connect_args)
+
+
+def create_db_and_tables():
+    SQLModel.metadata.create_all(engine)
+
+
+def get_session():
+    with Session(engine) as session:
+        yield session
+
+
+SessionDep = Annotated[Session, Depends(get_session)]
+
+database_router = APIRouter()
+
+@database_router.post("/heroes/")
+def create_hero(hero: Hero, session: SessionDep) -> Hero:
+    session.add(hero)
+    session.commit()
+    session.refresh(hero)
+    return hero
+
+
+@database_router.get("/heroes/")
+def read_heroes(
+    session: SessionDep,
+    offset: int = 0,
+    limit: Annotated[int, Query(le=100)] = 100,
+) -> list[Hero]:
+    expression = select(Hero).offset(offset).limit(limit)
+    heroes = session.exec(expression).all()
+    return heroes
+
+
+@database_router.get("/heroes/{hero_id}")
+def read_hero(hero_id: int, session: SessionDep) -> Hero:
+    hero = session.get(Hero, hero_id)
+    if not hero:
+        raise HTTPException(status_code=404, detail="Hero not found")
+    return hero
+
+
+@database_router.delete("/heroes/{hero_id}")
+def delete_hero(hero_id: int, session: SessionDep):
+    hero = session.get(Hero, hero_id)
+    if not hero:
+        raise HTTPException(status_code=404, detail="Hero not found")
+    session.delete(hero)
+    session.commit()
+    return {"ok": True}
+
+
+@database_router.patch("/heroes/{hero_id}")
+def update_hero(hero_id: int, hero_update: Hero, session: SessionDep) -> Hero:
+    hero = session.get(Hero, hero_id)
+    if not hero:
+        raise HTTPException(status_code=404, detail="Hero not found")
+    hero_data = hero_update.model_dump(exclude_unset=True)
+    hero.sqlmodel_update(hero_data)
+    session.add(hero)
+    session.commit()
+    session.refresh(hero)
+    return hero
+
+
+class Test(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)

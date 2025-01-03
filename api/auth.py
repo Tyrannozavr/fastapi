@@ -2,9 +2,8 @@ from datetime import timedelta
 from typing import Annotated
 
 from fastapi import APIRouter
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-
 from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
 
 from auth import get_current_user, User, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES, authenticate_user, \
@@ -13,6 +12,9 @@ from auth import get_current_user, User, create_access_token, ACCESS_TOKEN_EXPIR
 router = APIRouter()
 
 AuthorizedUserType = Annotated[User, Depends(get_current_user)]
+
+
+
 
 @router.get("/me", tags=["test1"], response_model=dict[str, User])
 def items_secured(user: AuthorizedUserType):
