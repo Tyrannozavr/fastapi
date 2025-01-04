@@ -1,14 +1,9 @@
 import asyncio
 
-
-from fastapi.params import Depends
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
-from api.user import get_db, get_db_session
-from crud.houses import create_house, add_house_to_street
+from db.queries.houses import add_house_to_street
 from database.database import DATABASE_URL_TEST
-from models.user import User
 
 engine = create_async_engine(DATABASE_URL_TEST, echo=False)
 

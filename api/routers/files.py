@@ -10,7 +10,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
-from api.exceptions import MyExcellentException
+from api.exceptions.exceptions import MyExcellentException
 
 router =  APIRouter()
 

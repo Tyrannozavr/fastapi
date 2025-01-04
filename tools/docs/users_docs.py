@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from api.types import UserOut, UserIn, BaseUser
+from types import UserOut, UserIn, BaseUser
 
 
 @dataclass

@@ -64,16 +64,16 @@ def delete_hero(hero_id: int, session: SessionDep):
     return {"ok": True}
 
 
-@database_router.patch("/heroes/{hero_id}", tags=[heroes_type])
-def update_hero(hero_id: int, hero_update: HeroUpdate, session: SessionDep) -> HeroPublic:
-    hero = session.get(Hero, hero_id)
-    if not hero:
+@database_router.patch("/heroes/{hero_id}", tags=[heroes_type], response_model=HeroPublic)
+def update_hero(hero_id: int, hero_update: HeroUpdate, session: SessionDep):
+    hero_db = session.get(Hero, hero_id)
+    if not hero_db:
         raise HTTPException(status_code=404, detail="Hero not found")
     hero_data = hero_update.model_dump(exclude_unset=True)
-    hero.sqlmodel_update(hero_data)
-    session.add(hero)
+    hero_db.sqlmodel_update(hero_data)
+    session.add(hero_db)
     session.commit()
-    session.refresh(hero)
-    return hero
+    session.refresh(hero_db)
+    return hero_db
 
 

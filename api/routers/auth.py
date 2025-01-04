@@ -6,7 +6,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
 
-from auth import get_current_user, User, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES, authenticate_user, \
+from db.queries.auth import get_current_user, User, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES, authenticate_user, \
     fake_users_db
 
 router = APIRouter()

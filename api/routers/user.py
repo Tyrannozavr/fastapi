@@ -1,4 +1,3 @@
-import asyncio
 from typing import AsyncGenerator, List
 
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
@@ -6,7 +5,7 @@ from sqlalchemy import exc
 from sqlalchemy.ext.asyncio import AsyncSession
 
 # import crud, schemas
-from crud import user as user_crud
+from db.queries import user as user_crud
 from schemas import user as user_schemas
 from database.database import async_session
 
