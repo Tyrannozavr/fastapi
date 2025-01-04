@@ -1,11 +1,11 @@
 from fastapi import APIRouter
 
+from api.routers import *
+
 router = APIRouter()
 
-app.include_router(user.router)
-app.include_router(test.router)
-app.include_router(restrictions.router)
-app.include_router(files.router)
-app.include_router(dependencies.router)
-app.include_router(auth.router, prefix="/auth", tags=["auth"])
-app.include_router(doc_example.database_router, prefix="/database", tags=["auth"])
+router.include_router(user.router, tags=["users"], prefix="/user")
+router.include_router(test.router, tags=["test"], prefix="/test")
+router.include_router(restrictions.router, tags=["restrictions"], prefix="/restrictions")
+router.include_router(files.router, prefix="/files", tags=["files"])
+router.include_router(auth.router, prefix="/auth", tags=["auth"])

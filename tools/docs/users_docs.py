@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from types import UserOut, UserIn, BaseUser
+from schemas.users_types import BaseUser, UserIn, UserOut
 
 
 @dataclass

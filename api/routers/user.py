@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 # import crud, schemas
 from db.queries import user as user_crud
 from schemas import user as user_schemas
-from database.database import async_session
+from db.database import async_session
 
 router =  APIRouter()
 

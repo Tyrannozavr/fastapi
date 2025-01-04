@@ -6,7 +6,7 @@ from fastapi import Query, Cookie, Header
 from pydantic import BaseModel, Field
 
 from tools.docs.users_docs import validate_user1_docs
-from types import UserIn, UserOut
+from schemas.users_types import UserIn, UserOut
 from schemas.query import FilterParams
 
 router = APIRouter()
